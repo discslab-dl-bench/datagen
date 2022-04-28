@@ -5,8 +5,8 @@ import json
 import psutil
 import scale_dataset
 
-LAUNCH_SCRIPT = ""
-DATASET_PATH = ""
+# LAUNCH_SCRIPT = "/tracing_tools/train_full.sh"
+# DATASET_PATH = "/data/kits19/preprocessed_data"
 SYSTEM_MEMORY = psutil.virtual_memory()[0]
 
 def main(experiments):
@@ -44,12 +44,31 @@ if __name__ == "__main__":
         description="Schedule and run the experiments"
     )
     parser.add_argument(
+        "launch_script", type=pathlib.Path, help="Path to the training launch script"
+    )
+    parser.add_argument(
+        "dataset_path", type=pathlib.Path, help="Path to the dataset"
+    )
+    parser.add_argument(
         "experiments_file", type=pathlib.Path, help="Path to the experiments.json file"
+    )
+    parser.add_argument(
+        "output_dir", type=pathlib.Path, help="Directory where traces will be stored"
     )
     args = parser.parse_args()
 
+
+    if not os.path.isfile(args.launch_script):
+        print("Invalid launch script")
+        exit(-1)
+    if not os.path.isdir(args.dataset_path):
+        print("Invalid path to dataset (must be a directory)")
+        exit(-1)
     if not os.path.isfile(args.experiments_file):
         print("Invalid experiments file")
+        exit(-1)
+    if not os.path.isdir(args.output_dir):
+        print("Invalid output directory")
         exit(-1)
     
     try:
