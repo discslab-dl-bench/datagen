@@ -8,7 +8,7 @@ import numpy as np
 def get_original_dataset_size(path):
     total_size = 0
     for filename in os.listdir(path):
-        case_num = int(filename.split("_"[1]))   # expects files with name case_xxxxx_x.npy
+        case_num = int(filename.split("_")[1])   # expects files with name case_xxxxx_x.npy
         if case_num >= 300:     # Original dataset has 300 cases
             return total_size
         fullpath = os.path.join(path, filename)

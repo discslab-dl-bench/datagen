@@ -1,7 +1,7 @@
 {
     "exp_baseline_4gpus": {
         "num_gpus": 4,
-        "scale_data": "False",
+        "scale_data": false,
         "data_to_mem_ratio": 0,
         "data_scaling_method": "n/a",
         "scale_mem": "False",
