@@ -12,7 +12,7 @@ SYSTEM_MEMORY = psutil.virtual_memory()[0]
 
 def main(experiments, launch_script, dataset_path, output_dir):
     for experiment, settings in experiments.items():
-        num_gpus = settings['num_gpus']
+        num_gpus = str(settings['num_gpus'])
 
         # If we want to scale the dataset size
         if settings['scale_data']:
