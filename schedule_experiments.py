@@ -1,8 +1,9 @@
-import argparse
-import pathlib
-import os.path
+import sys
 import json
 import psutil
+import pathlib
+import os.path
+import argparse
 import scale_dataset
 import subprocess as sp
 
@@ -12,6 +13,8 @@ SYSTEM_MEMORY = psutil.virtual_memory()[0]
 
 def main(experiments, launch_script, dataset_path, output_dir):
     for experiment, settings in experiments.items():
+
+        
         num_gpus = str(settings['num_gpus'])
 
         # If we want to scale the dataset size
@@ -33,10 +36,19 @@ def main(experiments, launch_script, dataset_path, output_dir):
 
         # Base case, simply run the baseline experiment
         else:
+            print("Baseline settings")
             pass
         
         # Run the experiment by running the LAUNCH_SCRIPT
-        sp.run([launch_script, output_dir, num_gpus, experiment], stdout=sp.PIPE, stderr=sp.STDOUT)
+        print(f"Launching {experiment}: {settings}")
+
+        pathlib.Path("logs/").mkdir(parents=True, exist_ok=True)
+        
+        with open(f'logs/{experiment}.log', 'wb') as f: 
+            process = sp.Popen([launch_script, output_dir, num_gpus, experiment], stdout=sp.PIPE, stderr=sp.STDOUT)
+            for c in iter(lambda: process.stdout.read(1), b''): 
+                sys.stdout.buffer.write(c)
+                f.buffer.write(c)
 
 
             
@@ -79,5 +91,6 @@ if __name__ == "__main__":
         print("Experiments file is not valid JSON")
         print(e)
         exit(-1)
+
 
     main(experiments, args.launch_script, args.dataset_path, args.output_dir)
