@@ -48,7 +48,7 @@ def main(experiments, launch_script, dataset_path, output_dir):
             process = sp.Popen([launch_script, output_dir, num_gpus, experiment], stdout=sp.PIPE, stderr=sp.STDOUT)
             for c in iter(lambda: process.stdout.read(1), b''): 
                 sys.stdout.buffer.write(c)
-                f.buffer.write(c)
+                f.write(c)
 
 
             

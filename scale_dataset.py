@@ -74,7 +74,7 @@ def scale_dataset(path, desired_size):
             pair_size += os.path.getsize(file_to_cpy)
             shutil.copy(file_to_cpy, newcase)
 
-        print(f"Copied {case_to_cpy} to {newcase} ({pair_size} B)")
+        print(f"Copied {case_to_cpy} to {newcase_prefix} ({pair_size} B)")
         casenum_to_cpy = (casenum_to_cpy + 1) % 300
         newcase_counter += 1
 
