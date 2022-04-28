@@ -49,8 +49,8 @@ def reset_to_original_ds(path, max_num=300):
 
 
 
-def scale_dataset(path, size):
-    desired_size = size * (1024 ** 3)  # Size in GiB
+def scale_dataset(path, desired_size):
+
     original_size = get_original_dataset_size(path)
 
     if (desired_size < original_size):
@@ -106,7 +106,7 @@ def scale_ds_and_validate(path, size):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Increase the size of the image segmentation dataset to the given size (GiB). Uses a naive copying mechanism."
+        description="Increase the size of the image segmentation dataset to the given size (B). Uses a naive copying mechanism."
     )
     parser.add_argument(
         "dataset_path", type=pathlib.Path, help="Path to the data containing directory."

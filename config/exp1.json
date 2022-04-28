@@ -1,6 +1,6 @@
 {
     "exp_baseline_4gpus": {
-        "num_gpu": 4,
+        "num_gpus": 4,
         "scale_data": "False",
         "data_to_mem_ratio": 0,
         "data_scaling_method": "n/a",
@@ -8,7 +8,7 @@
         "target_mem_size": 0
     },
     "exp_4gpus_1xRAM_naive_copy": {
-        "num_gpu": 4,
+        "num_gpus": 4,
         "scale_data": "True",
         "data_to_mem_ratio": 1.0,
         "data_scaling_method": "naive_copy",
@@ -16,7 +16,7 @@
         "target_mem_size": 0
     },
     "exp_4gpus_5xRAM_naive_copy": {
-        "num_gpu": 4,
+        "num_gpus": 4,
         "scale_data": "True",
         "data_to_mem_ratio": 5.0,
         "data_scaling_method": "naive_copy",
