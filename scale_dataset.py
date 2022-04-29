@@ -4,12 +4,13 @@ import pathlib
 import shutil
 import numpy as np
 
+NUM_CASES = 210
 
 def get_original_dataset_size(path):
     total_size = 0
     for filename in os.listdir(path):
         case_num = int(filename.split("_")[1])   # expects files with name case_xxxxx_x.npy
-        if case_num >= 300:     # Original dataset has 300 cases
+        if case_num >= NUM_CASES:     
             return total_size
         fullpath = os.path.join(path, filename)
         filesize = os.path.getsize(fullpath)
@@ -36,14 +37,14 @@ def get_dataset_size(path):
     return total_size
 
 
-def reset_to_original_ds(path, max_num=300):
+def reset_to_original_ds(path, max_num=NUM_CASES):
     """
         Deletes all cases not part of the original dataset.
-        In the case of image segmentation that's all cases > 300.
+        In the case of image segmentation that's all cases > NUM_CASES.
     """
     for filename in os.listdir(path):
         case_num = int(filename.split("_")[1])   # expects files with name case_xxxxx.npy
-        if case_num >= max_num:     # Original dataset has 300 cases
+        if case_num >= max_num:    
             fullpath = os.path.join(path, filename)
             os.remove(fullpath)
 
@@ -60,7 +61,7 @@ def scale_dataset(path, desired_size):
     reset_to_original_ds(path)
 
     casenum_to_cpy = 0
-    newcase_counter = 300
+    newcase_counter = NUM_CASES
     
     while get_dataset_size(path) < desired_size:
         case_to_cpy = "case_" + f"{casenum_to_cpy:05}"
@@ -75,10 +76,10 @@ def scale_dataset(path, desired_size):
             shutil.copy(file_to_cpy, newcase)
 
         print(f"Copied {case_to_cpy} to {newcase_prefix} ({pair_size} B)")
-        casenum_to_cpy = (casenum_to_cpy + 1) % 300
+        casenum_to_cpy = (casenum_to_cpy + 1) % NUM_CASES
         newcase_counter += 1
 
-    num_cases_created = newcase_counter - 300
+    num_cases_created = newcase_counter - NUM_CASES
     print(f"Created {num_cases_created} new cases to reach total size of {get_dataset_size(path)} B")
 
 
