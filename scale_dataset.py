@@ -37,14 +37,14 @@ def get_dataset_size(path):
     return total_size
 
 
-def reset_to_original_ds(path, max_num=NUM_CASES):
+def reset_to_original_ds(path):
     """
         Deletes all cases not part of the original dataset.
         In the case of image segmentation that's all cases > NUM_CASES.
     """
     for filename in os.listdir(path):
         case_num = int(filename.split("_")[1])   # expects files with name case_xxxxx.npy
-        if case_num >= max_num:    
+        if case_num >= NUM_CASES:    
             fullpath = os.path.join(path, filename)
             os.remove(fullpath)
 

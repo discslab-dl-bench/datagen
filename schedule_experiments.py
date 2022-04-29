@@ -37,7 +37,9 @@ def main(experiments, launch_script, dataset_path, output_dir):
         # Base case, simply run the baseline experiment
         else:
             print("Baseline settings")
-            pass
+            if scale_dataset.get_original_dataset_size(dataset_path) != scale_dataset.get_dataset_size(dataset_path):
+                print("Reverting to original dataset size")
+                scale_dataset.reset_to_original_ds(dataset_path)
         
         # Run the experiment by running the LAUNCH_SCRIPT
         print(f"Launching {experiment}: {settings}")
