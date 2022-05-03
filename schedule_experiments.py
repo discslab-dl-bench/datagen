@@ -7,8 +7,6 @@ import argparse
 import scale_dataset
 import subprocess as sp
 
-# LAUNCH_SCRIPT = "/tracing_tools/train_full.sh"
-# DATASET_PATH = "/data/kits19/preprocessed_data"
 SYSTEM_MEMORY = psutil.virtual_memory()[0]
 
 def main(experiments, launch_script, dataset_path, output_dir):
