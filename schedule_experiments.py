@@ -10,9 +10,9 @@ import subprocess as sp
 SYSTEM_MEMORY = psutil.virtual_memory()[0]
 
 def main(experiments, launch_script, dataset_path, output_dir):
+
     for experiment, settings in experiments.items():
 
-        
         num_gpus = str(settings['num_gpus'])
 
         # If we want to scale the dataset size
@@ -42,7 +42,9 @@ def main(experiments, launch_script, dataset_path, output_dir):
         # Run the experiment by running the LAUNCH_SCRIPT
         print(f"Launching {experiment}: {settings}")
 
+        # Make necessary directories
         pathlib.Path("logs/").mkdir(parents=True, exist_ok=True)
+        pathlib.Path(output_dir).mkdir(parents=True, exist_ok=True)
         
         with open(f'logs/{experiment}.log', 'wb') as f: 
             process = sp.Popen([launch_script, output_dir, num_gpus, experiment], stdout=sp.PIPE, stderr=sp.STDOUT)
