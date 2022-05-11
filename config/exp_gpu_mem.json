@@ -1,0 +1,10 @@
+{
+    "exp_100gb_gpu_mem": {
+        "num_gpus": 4,
+        "scale_data": true,
+        "data_to_mem_ratio": 0.42,
+        "data_scaling_method": "naive",
+        "scale_mem": false,
+        "target_mem_size": 0
+    }
+}
