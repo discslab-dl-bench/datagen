@@ -52,7 +52,7 @@ def main(experiments, launch_script, dataset_path, output_dir):
                 sys.stdout.buffer.write(c)
                 f.write(c)
         
-        scale_dataset.reset_to_original_ds(dataset_path)
+    scale_dataset.reset_to_original_ds(dataset_path)
 
             
 
