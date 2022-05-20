@@ -53,7 +53,7 @@ def main(experiments, launch_script, dataset_path, output_dir):
             client = docker.from_env()
             print(f'Building unet3d docker image of branch {settings["mlcommons_branch"]}')
             buildpath = os.path.join(MLCOMMONS_REPO_PATH, "image_segmentation/pytorch/")
-            client.images.build(path = buildpath)
+            client.images.build(path = buildpath, tag = "unet3d:latest")
 
         
         # Run the experiment by running the LAUNCH_SCRIPT
