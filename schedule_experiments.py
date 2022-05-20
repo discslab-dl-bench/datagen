@@ -11,7 +11,7 @@ from git import Git
 
 SYSTEM_MEMORY = psutil.virtual_memory()[0]
 
-MLCOMMONS_REPO_PATH = ""
+MLCOMMONS_REPO_PATH = "/mlcommons_training/"
 
 def main(experiments, launch_script, dataset_path, output_dir):
 
