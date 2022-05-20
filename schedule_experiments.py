@@ -1,5 +1,6 @@
 import sys
 import json
+import docker
 import psutil
 import pathlib
 import os.path
@@ -47,6 +48,11 @@ def main(experiments, launch_script, dataset_path, output_dir):
         if settings["mlcommons_branch"] is not None:
             g = Git(MLCOMMONS_REPO_PATH)
             g.checkout(settings["mlcommons_branch"])
+
+            # Have to rebuild the unet3d image
+            client = docker.from_env()
+            client.images.build(path = os.path.join(MLCOMMONS_REPO_PATH, "/image_segmentation/pytorch/Dockerfile"))
+
         
         # Run the experiment by running the LAUNCH_SCRIPT
         print(f"Launching {experiment}: {settings}")
