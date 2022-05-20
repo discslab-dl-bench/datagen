@@ -7,7 +7,11 @@ import argparse
 import scale_dataset
 import subprocess as sp
 
+from git import Git
+
 SYSTEM_MEMORY = psutil.virtual_memory()[0]
+
+MLCOMMONS_REPO_PATH = ""
 
 def main(experiments, launch_script, dataset_path, output_dir):
 
@@ -38,6 +42,11 @@ def main(experiments, launch_script, dataset_path, output_dir):
             if scale_dataset.get_original_dataset_size(dataset_path) != scale_dataset.get_dataset_size(dataset_path):
                 print("Reverting to original dataset size")
                 scale_dataset.reset_to_original_ds(dataset_path)
+
+        # Switch to a specific MLCommons repo branch
+        if settings["mlcommons_branch"] is not None:
+            g = Git(MLCOMMONS_REPO_PATH)
+            g.checkout(settings["mlcommons_branch"])
         
         # Run the experiment by running the LAUNCH_SCRIPT
         print(f"Launching {experiment}: {settings}")
