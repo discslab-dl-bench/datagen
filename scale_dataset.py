@@ -57,7 +57,7 @@ def reset_to_original_ds(path):
     # by moving cases to another directory. Move these cases back.
     print(f"Num casefiles present: {len(cases)}")
     if len(cases) < 2 * NUM_CASES:
-        move_path = pathlib.Path(path).parent / "moved_cases"
+        move_path = os.path.join(pathlib.Path(path).parent,"moved_cases")
         print(f"We have previously lowered dataset size by moving cases in {move_path}")
 
         if not os.path.isdir(move_path):
@@ -65,7 +65,7 @@ def reset_to_original_ds(path):
             exit(-1)
         
         for moved_case in os.listdir(move_path):
-            moved_case = pathlib.Path(move_path) / moved_case
+            moved_case = os.path.join(pathlib.Path(move_path), moved_case)
             shutil.move(moved_case, path)
             print(f"Restored {moved_case}")
         
