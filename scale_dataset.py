@@ -82,7 +82,7 @@ def scale_dataset(path, desired_size):
     original_size = get_original_dataset_size(path)
 
     if (desired_size < original_size):
-        print(f"Reducing dataset size")
+        print(f"Reducing dataset size to {desired_size} B")
         move_path = os.path.join(os.path.dirname(path), "moved_cases")
         pathlib.Path(move_path).mkdir(parents=True, exist_ok=True)
 
