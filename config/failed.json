@@ -25,5 +25,14 @@
         "scale_mem": false,
         "target_mem_size": 0,
         "mlcommons_branch": "master_casefiles"
+    },
+    "1gpu_1xRAM": {
+        "num_gpus": 1,
+        "scale_data": true,
+        "data_to_mem_ratio": 1.0,
+        "data_scaling_method": "naive_copy",
+        "scale_mem": false,
+        "target_mem_size": 0,
+        "mlcommons_branch": "master_casefiles"
     }
 }
