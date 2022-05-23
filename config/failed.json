@@ -1,18 +1,18 @@
 {
-    "4gpu_vsmall_10g": {
+    "4gpu_baseline_ref": {
         "num_gpus": 4,
-        "scale_data": true,
-        "data_to_mem_ratio": 0.04,
-        "data_scaling_method": "naive_copy",
+        "scale_data": false,
+        "data_to_mem_ratio": 0,
+        "data_scaling_method": "n/a",
         "scale_mem": false,
         "target_mem_size": 0,
-        "mlcommons_branch": "master_casefiles"
+        "mlcommons_branch": "original_ddp"
     },
     "1gpu_baseline": {
         "num_gpus": 1,
         "scale_data": false,
         "data_to_mem_ratio": 0,
-        "data_scaling_method": "naive_copy",
+        "data_scaling_method": "n/a",
         "scale_mem": false,
         "target_mem_size": 0,
         "mlcommons_branch": "master_casefiles"
