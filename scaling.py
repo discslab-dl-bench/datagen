@@ -189,25 +189,3 @@ def create_instance():
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
     return tf_example
     
-
-# fi = "/raid/data/dlrm/terabyte_mmap/day_0_reordered.npz"
-fi = "/raid/data/dlrm/kaggle_mmap/train_day_0_reordered.npz"
-
-
-# with np.load(total_file) as data:
-#             total_per_file = data["total_per_file"]
-# print(total_per_file)
-
-with np.load(fi) as data:
-    X_int = data["X_int"]  # continuous  feature
-    X_cat = data["X_cat"]  # categorical feature
-    y = data["y"]   
-
-print(np.max(X_int))
-print(np.max(X_cat))
-
-
-
-
-# 195841983 terabyte
-# 6548660 kaggle
