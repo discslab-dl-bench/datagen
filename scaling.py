@@ -80,6 +80,18 @@ def scale_dlrm(input_path, output_path, desired_size, aug=False):
     f_input.close()
 
 
+
+def generate_dataset(output_path, desired_size, workload):
+    if workload == "imseg":
+        generate_data_imseg(output_path, desired_size)
+    elif workload == "bert":
+        generate_data_bert(output_path, desired_size)
+    elif workload == "dlrm":
+        generate_data_dlrm(output_path, desired_size)
+
+
+
+
 def generate_data_imseg(output_path, desired_size):
     # fix size
     newcase_counter = 0
@@ -106,12 +118,7 @@ def generate_data_bert(output_path, desired_size):
         newcase_counter += 1
 
 
-
-
-
-
-
-def generate_data_dlrm(output_path, desired_size):
+def generate_data_dlrm_raw(output_path, desired_size):
     while os.path.getsize(output_path) < desired_size: 
         label = [str(random.randint(0, 1))]
         numerical = [str(random.randint(0, 1000)) for _ in range(13)]
@@ -121,6 +128,17 @@ def generate_data_dlrm(output_path, desired_size):
         f_output = open(output_path, "w")
         f_output.write(line)
         f_output.close()
+
+
+def generate_data_dlrm(output_path, desired_size):
+    newcase_counter = 0
+    while os.path.getsize(output_path) < desired_size: 
+        num_instance = 6548660
+        X_int = np.random.randint(2557264, size = (num_instance, 13))
+        X_cat = np.random.randint(8831335, size = (num_instance, 26))
+        y = np.random.randint(2, size=num_instance)
+        np.savez(f'{output_path}/day_{newcase_counter}_reordered.npz', X_int=X_int, X_cat=X_cat, y=y)
+        newcase_counter += 1
 
 
 def create_int_feature(values):
@@ -171,3 +189,25 @@ def create_instance():
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
     return tf_example
     
+
+# fi = "/raid/data/dlrm/terabyte_mmap/day_0_reordered.npz"
+fi = "/raid/data/dlrm/kaggle_mmap/train_day_0_reordered.npz"
+
+
+# with np.load(total_file) as data:
+#             total_per_file = data["total_per_file"]
+# print(total_per_file)
+
+with np.load(fi) as data:
+    X_int = data["X_int"]  # continuous  feature
+    X_cat = data["X_cat"]  # categorical feature
+    y = data["y"]   
+
+print(np.max(X_int))
+print(np.max(X_cat))
+
+
+
+
+# 195841983 terabyte
+# 6548660 kaggle
