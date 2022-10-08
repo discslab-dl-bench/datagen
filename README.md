@@ -130,4 +130,6 @@ python3 data_generation.py \
     --workload dlrm \
     --data_format bin
 
+```
+
 The generated binary files are saved as `preprocessed_x.bin`.
