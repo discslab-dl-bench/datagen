@@ -1,3 +1,4 @@
+from fcntl import F_NOTIFY
 import os, random
 import argparse
 import pathlib
@@ -22,84 +23,86 @@ def generate_dataset(output_path, desired_size, workload, data_format):
         if data_format == "bin":
             generate_data_dlrm_bin(output_path, desired_size)
 
-def get_dataset_size(path):
-    total_size = 0
-    for filename in os.listdir(path):
-        fullpath = os.path.join(path, filename)
-        filesize = os.path.getsize(fullpath)
-        total_size += filesize
-    return total_size
-
 
 def generate_data_imseg(output_path, desired_size):
     # size range
     # [  1 471 444 444]
     # [  1 128 186 186]
     newcase_counter = 0
-    print("desired size", desired_size)
-    print("initial size", get_dataset_size(output_path))
-    while get_dataset_size(output_path) < desired_size: 
+    total_size = 0
+    while total_size < desired_size: 
         size1 = random.randint(128, 471)
         size2 = random.randint(186, 444)
         img = np.random.uniform(low=-2.340702, high=2.639792, size=(1, size1, size2, size2) )
         mask = np.random.randint(0, 2, size=(1, size1, size2, size2) )
-        np.save(f"{output_path}/case_{newcase_counter:05}_x.npy", img)
-        np.save(f"{output_path}/case_{newcase_counter:05}_y.npy", mask)
+        fnx = f"{output_path}/case_{newcase_counter:05}_x.npy"
+        fny = f"{output_path}/case_{newcase_counter:05}_y.npy"
+        np.save(fnx, img)
+        np.save(fny, mask)
         newcase_counter += 1
-        print("cur size", get_dataset_size(output_path))
+        total_size += os.path.getsize(fnx)
+        total_size += os.path.getsize(fny)
 
 
 def generate_data_bert(output_path, desired_size):
     newcase_counter = 0
-    while get_dataset_size(output_path) < desired_size: 
-        output_file = f"part-{newcase_counter:05}-of-00500"
+    total_size = 0
+    while total_size < desired_size: 
+        output_file = f"{output_path}/part-{newcase_counter:05}-of-00500"
         num_instances = random.randint(195754, 260461) # from counting # of lines in each part-00xxxx-of-00500
         writer = tf.io.TFRecordWriter(output_file)
-
         for i in range(num_instances):
             tf_example = create_instance()
             writer.write(tf_example.SerializeToString())
-        
         writer.close()
         newcase_counter += 1
+        total_size += os.path.getsize(output_file)
 
 
 def generate_data_dlrm_text(output_path, desired_size):
-    while get_dataset_size(output_path) < desired_size: 
-        label = [str(random.randint(0, 1))]
-        numerical = [str(random.randint(0, 1000)) for _ in range(13)]
-        categorical = ['%08x' % random.randrange(16**8) for _ in range(26)]
-        text = label + numerical + categorical
-        line = " ".join(text) + "\n"
-        f_output = open(output_path, "w")
-        f_output.write(line)
+    while total_size < desired_size: 
+        f_output = open(f"{output_path}/train.txt", "a")
+        for i in range(100):
+            label = [str(random.randint(0, 1))]
+            numerical = [str(random.randint(0, 1000)) for _ in range(13)]
+            categorical = ['%08x' % random.randrange(16**8) for _ in range(26)]
+            text = label + numerical + categorical
+            line = " ".join(text) + "\n"
+            f_output.write(line)
         f_output.close()
-
+        total_size = os.path.getsize(f_output)
+    
 
 def generate_data_dlrm_npz(output_path, desired_size):
     newcase_counter = 0
-    while get_dataset_size(output_path) < desired_size: 
+    total_size = 0
+    while total_size < desired_size: 
         num_instance = 6548660
         X_int = np.random.randint(2557264, size = (num_instance, 13))
         X_cat = np.random.randint(8831335, size = (num_instance, 26))
         y = np.random.randint(2, size=num_instance)
-        np.savez(f'{output_path}/day_{newcase_counter}_reordered.npz', X_int=X_int, X_cat=X_cat, y=y)
+        fn = f'{output_path}/day_{newcase_counter}_reordered.npz'
+        np.savez(fn, X_int=X_int, X_cat=X_cat, y=y)
         newcase_counter += 1
+        total_size += os.path.getsize(fn)
+
 
 def generate_data_dlrm_bin(output_path, desired_size):
     newcase_counter = 0
-    while get_dataset_size(output_path) < desired_size: 
-        with open(f"{output_path}/preprocessed_{newcase_counter}.bin", 'wb') as output_file:
-            num_instance = 10
+    total_size = 0
+    while total_size < desired_size: 
+        fn = f"{output_path}/preprocessed_{newcase_counter}.bin"
+        with open(fn, 'wb') as output_file:
+            num_instance = 6548660
             X_int = np.random.randint(2557264, size = (num_instance, 13))
             X_cat = np.random.randint(8831335, size = (num_instance, 26))
             y = np.random.randint(2, size=num_instance)
             np_data = np.concatenate([y.reshape(-1, 1), X_int, X_cat], axis=1)
             np_data = np_data.astype(np.int32)
             output_file.write(np_data.tobytes())
-
-        # np.savez(f'{output_path}/day_{newcase_counter}_reordered.npz', X_int=X_int, X_cat=X_cat, y=y)
         newcase_counter += 1
+        total_size += os.path.getsize(fn)
+
 
 
 def create_int_feature(values):
@@ -128,7 +131,6 @@ def create_instance():
     masked_lm_ids = [input_ids[i] for i in masked_lm_positions]
     masked_lm_weights = [1.0 for _ in range(mask_length)]
     next_sentence_label = random.randint(0,1)
-    
 
     # padding
     input_ids += [0 for _ in range(max_seq_length - id_length)]
@@ -151,7 +153,6 @@ def create_instance():
     return tf_example
     
 if __name__ == "__main__":
-    # input_path, output_path, desired_size, workload
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_path", dest="output_path", type=pathlib.Path)
     parser.add_argument("--desired_size", dest="desired_size", type=float)
