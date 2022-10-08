@@ -9,26 +9,30 @@ import tensorflow as tf
 import random
 import collections
 
-def generate_dataset(output_path, desired_size, workload, format):
+def generate_dataset(output_path, desired_size, workload, data_format):
     if workload == "imseg":
         generate_data_imseg(output_path, desired_size)
     elif workload == "bert":
         generate_data_bert(output_path, desired_size)
     elif workload == "dlrm":
-        if format == "raw":
-            generate_data_dlrm_raw(output_path, desired_size)
-        if format == "npz":
+        if data_format == "text":
+            generate_data_dlrm_text(output_path, desired_size)
+        if data_format == "npz":
             generate_data_dlrm_npz(output_path, desired_size)
-        if format == "bin":
+        if data_format == "bin":
             generate_data_dlrm_bin(output_path, desired_size)
 
 
 def generate_data_imseg(output_path, desired_size):
-    # fix size
+    # size range
+    # [  1 471 444 444]
+    # [  1 128 186 186]
     newcase_counter = 0
     while os.path.getsize(output_path) < desired_size: 
-        img = np.random.uniform(low=-2.340702, high=2.639792, size=(1, 190, 392, 392) )
-        mask = np.random.randint(0, 2, size=(1, 190, 392, 392) )
+        size1 = random.randint(128, 471)
+        size2 = random.randint(186, 444)
+        img = np.random.uniform(low=-2.340702, high=2.639792, size=(1, size1, size2, size2) )
+        mask = np.random.randint(0, 2, size=(1, size1, size2, size2) )
         np.save(f"{output_path}/case_{newcase_counter:05}_x.npy", img)
         np.save(f"{output_path}/case_{newcase_counter:05}_y.npy", mask)
         newcase_counter += 1
@@ -49,7 +53,7 @@ def generate_data_bert(output_path, desired_size):
         newcase_counter += 1
 
 
-def generate_data_dlrm_raw(output_path, desired_size):
+def generate_data_dlrm_text(output_path, desired_size):
     while os.path.getsize(output_path) < desired_size: 
         label = [str(random.randint(0, 1))]
         numerical = [str(random.randint(0, 1000)) for _ in range(13)]
@@ -136,8 +140,16 @@ def create_instance():
     return tf_example
     
 if __name__ == "__main__":
-    output_path = "./generation"
-    desired_size = "100M"
-    workload = "dlrm"
-    format = "bin"
-    generate_dataset(output_path, desired_size, workload, format)
+    # input_path, output_path, desired_size, workload
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output_path", dest="output_path", type=pathlib.Path)
+    parser.add_argument("--desired_size", dest="desired_size", type=float)
+    parser.add_argument("--workload", dest="workload", type=str, choices=['imseg', 'bert', 'dlrm'])
+    parser.add_argument("--data_format", dest="data_format", type=str, choices=['text', 'npz', 'bin'])
+    args = parser.parse_args()
+
+    if args.desired_size < 0:
+        print("ERROR: Desired size cannot be negative!")
+        exit(-1)
+
+    generate_dataset(args.output_path, args.desired_size, args.workload, args.data_format)
