@@ -22,13 +22,23 @@ def generate_dataset(output_path, desired_size, workload, data_format):
         if data_format == "bin":
             generate_data_dlrm_bin(output_path, desired_size)
 
+def get_dataset_size(path):
+    total_size = 0
+    for filename in os.listdir(path):
+        fullpath = os.path.join(path, filename)
+        filesize = os.path.getsize(fullpath)
+        total_size += filesize
+    return total_size
+
 
 def generate_data_imseg(output_path, desired_size):
     # size range
     # [  1 471 444 444]
     # [  1 128 186 186]
     newcase_counter = 0
-    while os.path.getsize(output_path) < desired_size: 
+    print("desired size", desired_size)
+    print("initial size", get_dataset_size(output_path))
+    while get_dataset_size(output_path) < desired_size: 
         size1 = random.randint(128, 471)
         size2 = random.randint(186, 444)
         img = np.random.uniform(low=-2.340702, high=2.639792, size=(1, size1, size2, size2) )
@@ -36,11 +46,12 @@ def generate_data_imseg(output_path, desired_size):
         np.save(f"{output_path}/case_{newcase_counter:05}_x.npy", img)
         np.save(f"{output_path}/case_{newcase_counter:05}_y.npy", mask)
         newcase_counter += 1
+        print("cur size", get_dataset_size(output_path))
 
 
 def generate_data_bert(output_path, desired_size):
     newcase_counter = 0
-    while os.path.getsize(output_path) < desired_size: 
+    while get_dataset_size(output_path) < desired_size: 
         output_file = f"part-{newcase_counter:05}-of-00500"
         num_instances = random.randint(195754, 260461) # from counting # of lines in each part-00xxxx-of-00500
         writer = tf.io.TFRecordWriter(output_file)
@@ -54,7 +65,7 @@ def generate_data_bert(output_path, desired_size):
 
 
 def generate_data_dlrm_text(output_path, desired_size):
-    while os.path.getsize(output_path) < desired_size: 
+    while get_dataset_size(output_path) < desired_size: 
         label = [str(random.randint(0, 1))]
         numerical = [str(random.randint(0, 1000)) for _ in range(13)]
         categorical = ['%08x' % random.randrange(16**8) for _ in range(26)]
@@ -67,7 +78,7 @@ def generate_data_dlrm_text(output_path, desired_size):
 
 def generate_data_dlrm_npz(output_path, desired_size):
     newcase_counter = 0
-    while os.path.getsize(output_path) < desired_size: 
+    while get_dataset_size(output_path) < desired_size: 
         num_instance = 6548660
         X_int = np.random.randint(2557264, size = (num_instance, 13))
         X_cat = np.random.randint(8831335, size = (num_instance, 26))
@@ -77,7 +88,7 @@ def generate_data_dlrm_npz(output_path, desired_size):
 
 def generate_data_dlrm_bin(output_path, desired_size):
     newcase_counter = 0
-    while os.path.getsize(output_path) < desired_size: 
+    while get_dataset_size(output_path) < desired_size: 
         with open(f"{output_path}/preprocessed_{newcase_counter}.bin", 'wb') as output_file:
             num_instance = 10
             X_int = np.random.randint(2557264, size = (num_instance, 13))
