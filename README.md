@@ -59,6 +59,8 @@ The size of the generated image is randomly determined as follows:
 
 `size2:` the shape of a single image, a random integer between 186 and 444
 
+Generated images and masks are saved as `case_xxxxx_x.npy` and `case_xxxxx_y.npy`.
+
 To generate data for image segmentation workload, run 
 
 ```shell
@@ -73,6 +75,8 @@ python3 data_generation.py \
 ### Bert
 
 The number of instances stored in each TFrecord is a random integer between 195754 and 260461.
+
+Generated TFrecords are saved as `part-xxxxx-of-00500`.
 
 To generate data for bert workload, run 
 
@@ -100,6 +104,7 @@ python3 data_generation.py \
     --data_format text
 
 ```
+The generated text file is saved as `train.txt`.
 
 To generate npz data for dlrm workload, run
 
@@ -113,6 +118,8 @@ python3 data_generation.py \
 
 ```
 
+The generated npz files are saved as `day_x_reordered.npz`.
+
 To generate binary data for dlrm workload, run
 
 ```shell
@@ -123,3 +130,4 @@ python3 data_generation.py \
     --workload dlrm \
     --data_format bin
 
+The generated binary files are saved as `preprocessed_x.bin`.
