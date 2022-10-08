@@ -44,7 +44,7 @@ python3 data_generation.py \
 
 There are three data formats for dlrm training set, `txt`, `npz`, and  `bin`. 
 
-To generate raw text data for dlrm workload, 
+To generate raw text data for dlrm workload, run
 
 ```shell
 
@@ -56,7 +56,7 @@ python3 data_generation.py \
 
 ```
 
-To generate npz data for dlrm workload, 
+To generate npz data for dlrm workload, run
 
 ```shell
 
@@ -68,7 +68,7 @@ python3 data_generation.py \
 
 ```
 
-To generate binary data for dlrm workload, 
+To generate binary data for dlrm workload, run
 
 ```shell
 
@@ -78,4 +78,3 @@ python3 data_generation.py \
     --workload dlrm \
     --data_format bin
 
-```
