@@ -4,6 +4,51 @@
 
 `data_generation.py`: dataset generation code
 
+`scaling.sh`: examples to run `data_scaling.py`
+
+`generation.sh`: examples to run `data_generation.py` 
+
+## Data scaling
+
+To scale the dataset of image segmetation, run
+
+```shell
+
+python3 data_scaling.py \
+    --input_path <path to the input files> \
+    --output_path <path to store the output files> \
+    --desired_size <the desired size of the dataset (B)> \
+    --workload imseg
+
+```
+
+To scale the dataset of bert, run
+
+```shell
+
+python3 data_scaling.py \
+    --input_path <path to the input files> \
+    --output_path <path to store the output files> \
+    --desired_size <the desired size of the dataset (B)> \
+    --workload bert
+
+```
+
+To scale the dataset of drlm, run
+
+```shell
+
+python3 data_scaling.py \
+    --input_path <path to the input files> \
+    --output_path <path to store the output files> \
+    --desired_size <the desired size of the dataset (B)> \
+    --workload dlrm
+
+```
+
+
+
+
 ## Data generation
 
 ### Image segmentation
