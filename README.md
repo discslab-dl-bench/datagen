@@ -1,4 +1,4 @@
-#Data scaling and generation
+# Data scaling and generation
 
 `data_scaling.py`: dataset scaling code
 
