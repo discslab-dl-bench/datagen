@@ -34,7 +34,7 @@ python3 data_scaling.py \
 
 ```
 
-To scale the dataset of drlm, run
+To scale the dataset of dlrm, run
 
 ```shell
 
