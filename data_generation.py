@@ -33,8 +33,10 @@ def generate_data_imseg(output_path, desired_size):
     while total_size < desired_size: 
         size1 = random.randint(128, 471)
         size2 = random.randint(186, 444)
-        img = np.random.uniform(low=-2.340702, high=2.639792, size=(1, size1, size2, size2) )
-        mask = np.random.randint(0, 2, size=(1, size1, size2, size2) )
+        img = np.random.uniform(low=-2.340702, high=2.639792, size=(1, size1, size2, size2))
+        mask = np.random.randint(0, 2, size=(1, size1, size2, size2))
+        img = img.astype(np.float32)
+        mask = mask.astype(np.uint8)
         fnx = f"{output_path}/case_{newcase_counter:05}_x.npy"
         fny = f"{output_path}/case_{newcase_counter:05}_y.npy"
         np.save(fnx, img)
