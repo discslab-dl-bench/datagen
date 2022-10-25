@@ -93,8 +93,8 @@ def generate_data_dlrm_bin(output_path, desired_size):
     newcase_counter = 0
     total_size = 0
     while total_size < desired_size: 
-        fn = f"{output_path}/preprocessed_{newcase_counter}.bin"
-        with open(fn, 'wb') as output_file:
+        fn = f"{output_path}/preprocessed.bin"
+        with open(fn, 'ab') as output_file:
             num_instance = 6548660
             X_int = np.random.randint(2557264, size = (num_instance, 13))
             X_cat = np.random.randint(8831335, size = (num_instance, 26))
@@ -102,9 +102,8 @@ def generate_data_dlrm_bin(output_path, desired_size):
             np_data = np.concatenate([y.reshape(-1, 1), X_int, X_cat], axis=1)
             np_data = np_data.astype(np.int32)
             output_file.write(np_data.tobytes())
-        newcase_counter += 1
         total_size += os.path.getsize(fn)
-
+        print("current size", total_size)
 
 
 def create_int_feature(values):
