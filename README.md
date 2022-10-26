@@ -72,6 +72,17 @@ python3 data_generation.py \
 
 ```
 
+The similarity of I/O pattern between the original dataset and the generated dataset is:
+
+0.998307454480907 (16GB)
+
+0.9998036352659359 (200GB)
+
+0.9549864312197991 (500GB)
+
+The similarity metric used is the version before Oct. 25. 
+
+
 ### Bert
 
 The number of instances stored in each TFrecord is a random integer between 195754 and 260461.
