@@ -143,4 +143,4 @@ python3 data_generation.py \
 
 ```
 
-The generated binary files are saved as `preprocessed_x.bin`.
+This command generates a single file `preprocessed.bin`.
