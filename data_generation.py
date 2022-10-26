@@ -9,6 +9,7 @@ import numpy as np
 import tensorflow as tf
 import random
 import collections
+import time
 
 def generate_dataset(output_path, desired_size, workload, data_format):
     if workload == "imseg":
@@ -47,19 +48,26 @@ def generate_data_imseg(output_path, desired_size):
 
 
 def generate_data_bert(output_path, desired_size):
-    newcase_counter = 0
+    newcase_counter = 27
     total_size = 0
     while total_size < desired_size: 
+        t1 = time.time()
         output_file = f"{output_path}/part-{newcase_counter:05}-of-00500"
-        num_instances = random.randint(195754, 260461) # from counting # of lines in each part-00xxxx-of-00500
+        # num_instances = int(195754 +  (260461 - 195754) * random.random()) # from counting # of lines in each part-00xxxx-of-00500
+        num_instances = 260461
         writer = tf.io.TFRecordWriter(output_file)
-        for i in range(num_instances):
-            tf_example = create_instance()
-            writer.write(tf_example.SerializeToString())
+        tf_examples = [create_instance() for _ in range(num_instances)]
+        for tf_example in tf_examples:
+            writer.write(tf_example.SerializeToString()) 
+        # for i in range(num_instances):
+        #     tf_example = create_instance()
+        #     writer.write(tf_example.SerializeToString()) 
         writer.close()
         newcase_counter += 1
         total_size += os.path.getsize(output_file)
-
+        t2 = time.time()
+        print(f"time: {t2 - t1} s")
+    
 
 def generate_data_dlrm_text(output_path, desired_size):
     while total_size < desired_size: 
@@ -89,8 +97,7 @@ def generate_data_dlrm_npz(output_path, desired_size):
         total_size += os.path.getsize(fn)
 
 
-def generate_data_dlrm_bin(output_path, desired_size):
-    newcase_counter = 0
+def generate_data_dlrm_bin(output_path, desired_size): 
     total_size = 0
     while total_size < desired_size: 
         fn = f"{output_path}/preprocessed.bin"
@@ -120,12 +127,12 @@ def create_instance():
     max_predictions_per_seq=76  
 
     # length of the sentence
-    id_length = random.randint(0, max_seq_length)
+    id_length = int(max_seq_length * random.random())
     mask_length = int(0.15 * id_length)
-    seg_length = random.randint(0, id_length)
+    seg_length = int(id_length * random.random())
  
     # randomly generate data
-    input_ids = [random.randint(0, 30522) for _ in range(id_length)] 
+    input_ids = [int(30522 * random.random()) for _ in range(id_length)] 
     input_mask = [1 for _ in range(id_length)] 
     segment_ids = [0 for _ in range(seg_length)] + [1 for _ in range(id_length - seg_length)]
     masked_lm_positions = random.choices(list(range(id_length)), k=mask_length)
