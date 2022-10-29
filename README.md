@@ -74,13 +74,13 @@ python3 data_generation.py \
 
 The similarity of I/O pattern between the original dataset and the generated dataset is:
 
-0.998307454480907 (16GB)
+`0.9952464907231472` (16GB)
 
-0.9998036352659359 (200GB)
+`0.9956360338156066` (200GB)
 
-0.9549864312197991 (500GB)
+`0.716433473522249` (500GB)
 
-The similarity metric used is the version before Oct. 25. 
+The similarity metric used is the latest version (Oct. 28.)
 
 
 ### Bert
@@ -102,9 +102,9 @@ python3 data_generation.py \
 
 The similarity of I/O pattern between the original dataset and the generated dataset is:
 
-0.9923460995842869 (16GB)
+`0.9923460995842869` (16GB)
 
-The similarity metric used is the latest version (Oct. 28)
+The similarity metric used is the latest version (Oct. 28.)
 
 
 ### DLRM
