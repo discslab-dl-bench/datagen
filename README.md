@@ -74,11 +74,11 @@ python3 data_generation.py \
 
 The similarity of I/O pattern between the original dataset and the generated dataset is:
 
-`0.9952464907231472` (16GB)
+`0.9952464907231472` (8gpu/ no memory limit/ 16GB)
 
-`0.9956360338156066` (200GB)
+`0.9956360338156066` (8gpu/ no memory limit/ 200GB)
 
-`0.716433473522249` (500GB)
+`0.716433473522249` (8gpu/ no memory limit/ 500GB)
 
 The similarity metric used is the latest version (Oct. 28.)
 
@@ -102,7 +102,7 @@ python3 data_generation.py \
 
 The similarity of I/O pattern between the original dataset and the generated dataset is:
 
-`0.9923460995842869` (16GB)
+`0.9923460995842869` (8gpu/ no memory limit/ 16GB)
 
 The similarity metric used is the latest version (Oct. 28.)
 
