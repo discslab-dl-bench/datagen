@@ -100,6 +100,13 @@ python3 data_generation.py \
 
 ```
 
+The similarity of I/O pattern between the original dataset and the generated dataset is:
+
+0.9923460995842869 (16GB)
+
+The similarity metric used is the latest version (Oct. 28)
+
+
 ### DLRM
 
 There are three data formats for dlrm training set, `txt`, `npz`, and  `bin`. 
