@@ -54,7 +54,10 @@ def scale_bert(input_path, output_path, desired_size, aug=False):
     casenum_to_cpy = 0
     newcase_counter = 0
         
+   
     while get_dataset_size(output_path) < desired_size:
+        print("cur size:", get_dataset_size(output_path))
+        print("desired size: ", desired_size)
         case_to_cpy = f"part-{casenum_to_cpy:05}-of-00500"
         newcase_name = f"part-{newcase_counter:05}-of-00500"
         file_to_cpy = os.path.join(input_path, case_to_cpy)
@@ -81,6 +84,21 @@ def scale_dlrm(input_path, output_path, desired_size, aug=False):
             f_output.close()
     
     f_input.close()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input_path", dest="input_path", type=pathlib.Path)
+    parser.add_argument("--output_path", dest="output_path", type=pathlib.Path)
+    parser.add_argument("--desired_size", dest="desired_size", type=float)
+    parser.add_argument("--workload", dest="workload", type=str, choices=['imseg', 'bert', 'dlrm'])
+    args = parser.parse_args()
+
+    if args.desired_size < 0:
+        print("ERROR: Desired size cannot be negative!")
+        exit(-1)
+
+    scale_dataset(args.input_path, args.output_path, args.desired_size, args.workload)
 
 
 
