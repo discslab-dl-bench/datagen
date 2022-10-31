@@ -80,7 +80,7 @@ The similarity of I/O pattern between the original dataset and the generated dat
 
 `0.716433473522249` (8gpu/ no memory limit/ 500GB)
 
-The similarity metric used is the latest version (Oct. 28.)
+The similarity metric used is the latest version (Oct. 31.)
 
 
 ### Bert
@@ -106,7 +106,7 @@ The similarity of I/O pattern between the original dataset and the generated dat
 
 `0.9861408408159394` (8gpu/ no memory limit/ 200GB)
 
-The similarity metric used is the latest version (Oct. 28.)
+The similarity metric used is the latest version (Oct. 31.)
 
 
 ### DLRM
