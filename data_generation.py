@@ -1,28 +1,26 @@
-from fcntl import F_NOTIFY
-import os, random
-import argparse
+import os
+import time
+import random
 import pathlib
-import shutil
-from unicodedata import category
-from click import pass_obj
+import argparse
+import collections
 import numpy as np
 import tensorflow as tf
-import random
-import collections
-import time
 
-def generate_dataset(output_path, desired_size, workload, data_format):
+DLRM_CATEGORY_RANGES = [10000000,    38985,    17278,     7418,    20242,        3,
+           7120,     1543,       63,  9999978,  2642264,   397262,
+             10,     2208,    11931,      155,        4,      976,
+             14, 10000000,  9832963, 10000000,   573162,    12969,
+            108,       36]
+
+
+def generate_dataset(output_path, desired_size, workload):
     if workload == "imseg":
         generate_data_imseg(output_path, desired_size)
     elif workload == "bert":
         generate_data_bert(output_path, desired_size)
     elif workload == "dlrm":
-        if data_format == "text":
-            generate_data_dlrm_text(output_path, desired_size)
-        if data_format == "npz":
-            generate_data_dlrm_npz(output_path, desired_size)
-        if data_format == "bin":
-            generate_data_dlrm_bin(output_path, desired_size)
+        generate_data_dlrm_bin(output_path, desired_size)
 
 
 def generate_data_imseg(output_path, desired_size):
@@ -69,6 +67,41 @@ def generate_data_bert(output_path, desired_size):
         print(f"time: {t2 - t1} s")
     
 
+def generate_data_dlrm_bin(output_path, desired_size): 
+    total_size = 0
+    while total_size < desired_size: 
+        fn = f"{output_path}/terabyte_processed_train.bin"
+        print(f'Writing DLRM train file {fn}')
+        with open(fn, 'ab') as output_file:
+            num_instance = 6548660
+            X_int = np.random.randint(2557264, size = (num_instance, 13))
+            X_cat = np.random.randint(0, DLRM_CATEGORY_RANGES, size = (num_instance, 26))
+            y = np.random.randint(2, size=num_instance)
+            np_data = np.concatenate([y.reshape(-1, 1), X_int, X_cat], axis=1)
+            np_data = np_data.astype(np.int32)
+            output_file.write(np_data.tobytes())
+        total_size += os.path.getsize(fn)
+        print("\tcurrent size", total_size)
+
+    # Make a dummy evaluation file, as the workload checks for its presence
+    fn = f"{output_path}/terabyte_processed_test.bin"
+    print(f'Writing DLRM eval file {fn}')
+
+    with open(fn, 'ab') as output_file:
+        num_instance = 6548660
+        X_int = np.random.randint(2557264, size = (num_instance, 13))
+        X_cat = np.random.randint(0, DLRM_CATEGORY_RANGES, size = (num_instance, 26))
+        y = np.random.randint(2, size=num_instance)
+        np_data = np.concatenate([y.reshape(-1, 1), X_int, X_cat], axis=1)
+        np_data = np_data.astype(np.int32)
+        output_file.write(np_data.tobytes())
+
+    # Save the count metadata needed by the workload
+    with open(f"{output_path}/day_fea_count.npz", "wb") as outfile:
+        np.savez(outfile, counts=DLRM_CATEGORY_RANGES)
+
+
+
 def generate_data_dlrm_text(output_path, desired_size):
     while total_size < desired_size: 
         f_output = open(f"{output_path}/train.txt", "a")
@@ -95,22 +128,6 @@ def generate_data_dlrm_npz(output_path, desired_size):
         np.savez(fn, X_int=X_int, X_cat=X_cat, y=y)
         newcase_counter += 1
         total_size += os.path.getsize(fn)
-
-
-def generate_data_dlrm_bin(output_path, desired_size): 
-    total_size = 0
-    while total_size < desired_size: 
-        fn = f"{output_path}/preprocessed.bin"
-        with open(fn, 'ab') as output_file:
-            num_instance = 6548660
-            X_int = np.random.randint(2557264, size = (num_instance, 13))
-            X_cat = np.random.randint(8831335, size = (num_instance, 26))
-            y = np.random.randint(2, size=num_instance)
-            np_data = np.concatenate([y.reshape(-1, 1), X_int, X_cat], axis=1)
-            np_data = np_data.astype(np.int32)
-            output_file.write(np_data.tobytes())
-        total_size += os.path.getsize(fn)
-        print("current size", total_size)
 
 
 def create_int_feature(values):
@@ -162,14 +179,13 @@ def create_instance():
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output_path", dest="output_path", type=pathlib.Path)
-    parser.add_argument("--desired_size", dest="desired_size", type=float)
-    parser.add_argument("--workload", dest="workload", type=str, choices=['imseg', 'bert', 'dlrm'])
-    parser.add_argument("--data_format", dest="data_format", type=str, choices=['text', 'npz', 'bin'])
+    parser.add_argument("-o", "--output-path", required=True, type=pathlib.Path)
+    parser.add_argument("-s", "--size", required=True, type=float)
+    parser.add_argument("-w", "--workload", dest="workload", type=str, required=True, choices=['imseg', 'bert', 'dlrm'])
     args = parser.parse_args()
 
-    if args.desired_size < 0:
+    if args.size < 0:
         print("ERROR: Desired size cannot be negative!")
         exit(-1)
 
-    generate_dataset(args.output_path, args.desired_size, args.workload, args.data_format)
+    generate_dataset(args.output_path, args.size, args.workload)
